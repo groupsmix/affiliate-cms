@@ -17,6 +17,7 @@ export default function AdminLayout({
         <strong style={{ marginRight: '16px' }}>Admin</strong>
         <Link href="/admin/content">Content</Link>
         <Link href="/admin/products">Products</Link>
+        <Link href="/admin/clicks">Clicks</Link>
       </nav>
       {children}
     </div>
