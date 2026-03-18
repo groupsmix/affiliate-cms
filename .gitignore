@@ -1,9 +1,11 @@
 node_modules/
 dist/
 .env
-*.js
-*.d.ts
-*.js.map
-*.d.ts.map
-!tsconfig.json
-!package.json
+.next/
+next-env.d.ts
+
+# CLI compiled output
+src/**/*.js
+src/**/*.d.ts
+src/**/*.js.map
+src/**/*.d.ts.map
