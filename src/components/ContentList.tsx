@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ScoreBadge from './ScoreBadge';
 import styles from './ContentList.module.css';
 
 interface ContentItem {
@@ -8,6 +9,7 @@ interface ContentItem {
   content_type: string;
   excerpt: string | null;
   published_at: string | null;
+  averageRating?: number | null;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -46,7 +48,12 @@ export default function ContentList({
               {TYPE_LABELS[article.content_type] || article.content_type}
             </span>
           )}
-          <h3 className={styles.title}>{article.title}</h3>
+          <div className={styles.titleRow}>
+            <h3 className={styles.title}>{article.title}</h3>
+            {typeof article.averageRating === 'number' && (
+              <ScoreBadge score={article.averageRating} max={5} />
+            )}
+          </div>
           {article.excerpt && (
             <p className={styles.excerpt}>{article.excerpt}</p>
           )}

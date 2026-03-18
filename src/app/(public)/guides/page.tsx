@@ -1,4 +1,5 @@
 import { fetchPublishedContentByTypes } from '@/app/_actions/public';
+import { averageRating } from '@/lib/rating';
 import ContentList from '@/components/ContentList';
 import styles from './page.module.css';
 
@@ -18,14 +19,23 @@ interface ContentItem {
   content_type: string;
   excerpt: string | null;
   published_at: string | null;
+  averageRating?: number | null;
 }
 
 export default async function GuidesPage() {
-  const articles = (await fetchPublishedContentByTypes([
+  const raw = await fetchPublishedContentByTypes([
     'best',
     'problem',
     'alternative',
-  ])) as ContentItem[];
+  ]);
+  const articles = raw.map((a: Record<string, unknown>) => ({
+    ...a,
+    averageRating: averageRating(
+      a.content_products as
+        | Array<{ products: { rating: number | null } | null }>
+        | undefined,
+    ),
+  })) as ContentItem[];
 
   const bestArticles = articles.filter((a) => a.content_type === 'best');
   const problemArticles = articles.filter((a) => a.content_type === 'problem');

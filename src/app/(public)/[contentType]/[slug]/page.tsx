@@ -6,6 +6,7 @@ import {
   fetchProductsForPublicContent,
 } from '@/app/_actions/public';
 import type { ContentType } from '@/types/index';
+import StarRating from '@/components/StarRating';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -178,6 +179,11 @@ export default async function ContentPage({
                           <p className={styles.productTagline}>
                             {product.tagline}
                           </p>
+                        )}
+                        {typeof product.rating === 'number' && (
+                          <div className={styles.productRating}>
+                            <StarRating rating={product.rating as number} />
+                          </div>
                         )}
                         {product.pricing_model && (
                           <span className={styles.productPricing}>
