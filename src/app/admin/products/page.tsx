@@ -1,6 +1,7 @@
 import { fetchProductsList } from '../_actions/products';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export default async function ProductsListPage() {
   const products = await fetchProductsList();

@@ -5,6 +5,7 @@ import { fetchProductsList } from '../../_actions/products';
 import type { ContentStatus } from '@/types/index';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export default async function EditContentPage({ params }: { params: { id: string } }) {
   const { id } = params;
