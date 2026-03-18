@@ -1,11 +1,20 @@
 import type { Metadata } from 'next';
+import { IBM_Plex_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 
-export const runtime = 'edge';
+const font = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'أدوات البريد — أفضل أدوات النشرات البريدية والتسويق بالإيميل',
-  description: 'مراجعات ومقارنات عملية تساعدك تختار أداة النشرات البريدية والتسويق بالإيميل المناسبة لصناع المحتوى العرب',
+  title: {
+    default: 'أدوات البريد — أفضل أدوات النشرات البريدية والتسويق بالإيميل',
+    template: '%s — أدوات البريد',
+  },
+  description:
+    'مراجعات ومقارنات عملية تساعدك تختار أداة النشرات البريدية والتسويق بالإيميل المناسبة لصناع المحتوى العرب',
 };
 
 export default function RootLayout({
@@ -15,9 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl">
-      <body>
-        {children}
-      </body>
+      <body className={font.className}>{children}</body>
     </html>
   );
 }

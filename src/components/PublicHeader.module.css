@@ -1,44 +1,137 @@
 .header {
-  border-bottom: 1px solid #e5e5e5;
-  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .headerInner {
-  max-width: 1080px;
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 0 24px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .logo {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-primary);
   text-decoration: none;
+  letter-spacing: -0.01em;
 }
 
-.nav {
+.menuBtn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuIcon {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text);
+  position: relative;
+  transition: background 0.2s;
+}
+
+.menuIcon::before,
+.menuIcon::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text);
+  right: 0;
+  transition: transform 0.2s;
+}
+
+.menuIcon::before {
+  top: -7px;
+}
+
+.menuIcon::after {
+  top: 7px;
+}
+
+.menuIconOpen {
+  background: transparent;
+}
+
+.menuIconOpen::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.menuIconOpen::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+.nav {}
+
+.navList {
   display: flex;
-  gap: 24px;
+  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .navLink {
+  display: block;
+  padding: 8px 14px;
   font-size: 15px;
-  color: #444;
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.15s;
+  border-radius: var(--radius);
+  transition: color 0.15s, background 0.15s;
 }
 
 .navLink:hover {
-  color: #0066cc;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
-.navLinkActive {
-  color: #0066cc;
+@media (max-width: 768px) {
+  .menuBtn {
+    display: flex;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: 64px;
+    right: 0;
+    left: 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 24px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .navOpen {
+    display: block;
+  }
+
+  .navList {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .navLink {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
 }
