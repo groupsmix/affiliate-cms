@@ -3,6 +3,7 @@ import Link from 'next/link';
 import PublicHeader from '@/components/PublicHeader';
 import PublicFooter from '@/components/PublicFooter';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import ComparisonTable from '@/components/ComparisonTable';
 import { fetchContentByTypeAndSlug, fetchProductsForPublicContent } from '../../_actions/public';
 import type { ContentType } from '@/types/index';
 import styles from './page.module.css';
@@ -116,6 +117,26 @@ export default async function ContentPage({
 
           {content.excerpt && (
             <p className={styles.excerpt}>{content.excerpt}</p>
+          )}
+
+          {contentType === 'comparison' && linkedProducts.length >= 2 && (
+            <ComparisonTable
+              products={linkedProducts
+                .map((lp: Record<string, unknown>) => {
+                  const p = lp.products as Record<string, string | boolean | number | null> | null;
+                  if (!p) return null;
+                  return {
+                    name: p.name as string,
+                    tagline: p.tagline as string | null,
+                    description: p.description as string | null,
+                    pricing_model: p.pricing_model as string | null,
+                    rating: p.rating as number | null,
+                    affiliate_url: p.affiliate_url as string,
+                    website_url: p.website_url as string,
+                  };
+                })
+                .filter((p): p is NonNullable<typeof p> => p !== null)}
+            />
           )}
 
           {content.body && (
