@@ -1,12 +1,31 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import PublicHeader from '@/components/PublicHeader';
+import PublicFooter from '@/components/PublicFooter';
 import { fetchContentByTypeAndSlug, fetchProductsForPublicContent } from '../../_actions/public';
 import type { ContentType } from '@/types/index';
+import styles from './page.module.css';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 const VALID_CONTENT_TYPES: ContentType[] = ['best', 'review', 'comparison', 'problem', 'alternative'];
+
+const CONTENT_TYPE_LABELS: Record<string, string> = {
+  review: 'المراجعات',
+  comparison: 'المقارنات',
+  best: 'الأدلة',
+  problem: 'الأدلة',
+  alternative: 'الأدلة',
+};
+
+const CONTENT_TYPE_LINKS: Record<string, string> = {
+  review: '/reviews',
+  comparison: '/comparisons',
+  best: '/guides',
+  problem: '/guides',
+  alternative: '/guides',
+};
 
 export default async function ContentPage({
   params,
@@ -26,86 +45,79 @@ export default async function ContentPage({
   }
 
   const linkedProducts = await fetchProductsForPublicContent(content.id);
+  const sectionLabel = CONTENT_TYPE_LABELS[contentType] || contentType;
+  const sectionLink = CONTENT_TYPE_LINKS[contentType] || '/';
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: '24px' }}>
-      <nav style={{ marginBottom: '24px', fontSize: '14px' }}>
-        <Link href="/" style={{ color: '#0070f3' }}>Home</Link>
-        {' / '}
-        <span style={{ color: '#888' }}>{contentType}</span>
-      </nav>
+    <>
+      <PublicHeader />
+      <div className={styles.container}>
+        <nav className={styles.breadcrumb}>
+          <Link href="/" className={styles.breadcrumbLink}>الرئيسية</Link>
+          <span className={styles.breadcrumbSep}>/</span>
+          <Link href={sectionLink} className={styles.breadcrumbLink}>{sectionLabel}</Link>
+          <span className={styles.breadcrumbSep}>/</span>
+          <span>{content.title}</span>
+        </nav>
 
-      <article>
-        <h1 style={{ margin: '0 0 8px 0' }}>{content.title}</h1>
+        <article>
+          <h1 className={styles.articleTitle}>{content.title}</h1>
 
-        <div style={{ display: 'flex', gap: '12px', fontSize: '13px', color: '#888', marginBottom: '24px' }}>
-          <span style={{
-            padding: '2px 8px',
-            borderRadius: '4px',
-            background: '#e2e3e5',
-            color: '#383d41',
-          }}>
-            {content.content_type}
-          </span>
-          {content.published_at && (
-            <span>{new Date(content.published_at).toLocaleDateString()}</span>
+          <div className={styles.meta}>
+            <span className={styles.tag}>{content.content_type}</span>
+            {content.published_at && (
+              <span>{new Date(content.published_at).toLocaleDateString('ar')}</span>
+            )}
+            {content.author && <span>{content.author}</span>}
+          </div>
+
+          {content.excerpt && (
+            <p className={styles.excerpt}>{content.excerpt}</p>
           )}
-          {content.author && <span>by {content.author}</span>}
-        </div>
 
-        {content.excerpt && (
-          <p style={{ fontSize: '16px', color: '#555', fontStyle: 'italic', marginBottom: '24px' }}>
-            {content.excerpt}
-          </p>
+          {content.body && (
+            <div
+              className={styles.body}
+              dangerouslySetInnerHTML={{ __html: content.body }}
+            />
+          )}
+        </article>
+
+        {linkedProducts.length > 0 && (
+          <section className={styles.productsSection}>
+            <h2 className={styles.productsTitle}>المنتجات المرتبطة</h2>
+            <ul className={styles.productsList}>
+              {linkedProducts.map((lp: Record<string, unknown>) => {
+                const product = lp.products as Record<string, string | boolean | null> | null;
+                if (!product) return null;
+                return (
+                  <li key={lp.id as string} className={styles.productItem}>
+                    <span className={styles.productName}>{product.name}</span>
+                    {product.tagline && (
+                      <span className={styles.productTagline}>
+                        — {product.tagline}
+                      </span>
+                    )}
+                    {product.affiliate_url && (
+                      <div>
+                        <a
+                          href={product.affiliate_url as string}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.productLink}
+                        >
+                          اطلع عليه &larr;
+                        </a>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
         )}
-
-        {content.body && (
-          <div
-            style={{ lineHeight: 1.7, fontSize: '16px' }}
-            dangerouslySetInnerHTML={{ __html: content.body }}
-          />
-        )}
-      </article>
-
-      {linkedProducts.length > 0 && (
-        <section style={{ marginTop: '40px', borderTop: '1px solid #eee', paddingTop: '24px' }}>
-          <h2>Related Products</h2>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {linkedProducts.map((lp: Record<string, unknown>) => {
-              const product = lp.products as Record<string, string | boolean | null> | null;
-              if (!product) return null;
-              return (
-                <li
-                  key={lp.id as string}
-                  style={{
-                    padding: '12px 0',
-                    borderBottom: '1px solid #eee',
-                  }}
-                >
-                  <strong>{product.name}</strong>
-                  {product.tagline && (
-                    <span style={{ color: '#555', marginLeft: '8px', fontSize: '14px' }}>
-                      — {product.tagline}
-                    </span>
-                  )}
-                  {product.affiliate_url && (
-                    <div style={{ marginTop: '4px' }}>
-                      <a
-                        href={product.affiliate_url as string}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: '#0070f3', fontSize: '14px' }}
-                      >
-                        Check it out →
-                      </a>
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
-    </div>
+      </div>
+      <PublicFooter />
+    </>
   );
 }

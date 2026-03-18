@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import './globals.css';
 
 export const runtime = 'edge';
 
 export const metadata: Metadata = {
-  title: 'Affiliate CMS',
-  description: 'Admin panel for affiliate content management',
+  title: 'أدوات البريد — أفضل أدوات النشرات البريدية والتسويق بالإيميل',
+  description: 'مراجعات ومقارنات عملية تساعدك تختار أداة النشرات البريدية والتسويق بالإيميل المناسبة لصناع المحتوى العرب',
 };
 
 export default function RootLayout({
@@ -13,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif' }}>
+    <html lang="ar" dir="rtl">
+      <body>
         {children}
       </body>
     </html>
