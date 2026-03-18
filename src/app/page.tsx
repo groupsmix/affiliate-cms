@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import PublicHeader from '@/components/PublicHeader';
 import PublicFooter from '@/components/PublicFooter';
-import { fetchPublishedContent } from './_actions/public';
+import { fetchPublishedContent, fetchPublishedContentWithRatings } from './_actions/public';
+import RatingBadge from '@/components/RatingBadge';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -16,10 +17,17 @@ interface ContentItem {
   published_at: string | null;
 }
 
-export default async function HomePage() {
-  const articles = await fetchPublishedContent() as ContentItem[];
+interface ContentItemWithRating extends ContentItem {
+  topRating: number | null;
+}
 
-  const reviews = articles.filter((a) => a.content_type === 'review');
+export default async function HomePage() {
+  const [articles, reviewsWithRatings] = await Promise.all([
+    fetchPublishedContent() as Promise<ContentItem[]>,
+    fetchPublishedContentWithRatings('review') as Promise<ContentItemWithRating[]>,
+  ]);
+
+  const reviews = reviewsWithRatings;
   const comparisons = articles.filter((a) => a.content_type === 'comparison');
   const problems = articles.filter((a) => a.content_type === 'problem');
   const best = articles.filter((a) => a.content_type === 'best');
@@ -80,6 +88,11 @@ export default async function HomePage() {
                 className={styles.card}
               >
                 <div className={styles.cardTitle}>{article.title}</div>
+                {(article as ContentItemWithRating).topRating !== null && (article as ContentItemWithRating).topRating !== undefined && (
+                  <div className={styles.cardRating}>
+                    <RatingBadge rating={(article as ContentItemWithRating).topRating as number} />
+                  </div>
+                )}
                 {article.excerpt && (
                   <div className={styles.cardExcerpt}>{article.excerpt}</div>
                 )}

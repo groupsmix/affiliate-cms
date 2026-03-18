@@ -49,6 +49,10 @@
   font-size: 12px;
 }
 
+.articleRating {
+  margin: 12px 0 20px;
+}
+
 .excerpt {
   font-size: 17px;
   color: #555;

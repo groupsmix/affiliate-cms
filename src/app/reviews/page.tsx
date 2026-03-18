@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import PublicHeader from '@/components/PublicHeader';
 import PublicFooter from '@/components/PublicFooter';
-import { fetchPublishedContentByType } from '../_actions/public';
+import { fetchPublishedContentWithRatings } from '../_actions/public';
+import RatingBadge from '@/components/RatingBadge';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -19,10 +20,11 @@ interface ContentItem {
   content_type: string;
   excerpt: string | null;
   published_at: string | null;
+  topRating: number | null;
 }
 
 export default async function ReviewsPage() {
-  const articles = await fetchPublishedContentByType('review') as ContentItem[];
+  const articles = await fetchPublishedContentWithRatings('review') as ContentItem[];
 
   return (
     <>
@@ -39,6 +41,11 @@ export default async function ReviewsPage() {
               <li key={article.id}>
                 <Link href={`/review/${article.slug}`} className={styles.listItem}>
                   <div className={styles.itemTitle}>{article.title}</div>
+                  {article.topRating !== null && article.topRating !== undefined && (
+                    <div className={styles.itemRating}>
+                      <RatingBadge rating={article.topRating} />
+                    </div>
+                  )}
                   {article.excerpt && (
                     <div className={styles.itemExcerpt}>{article.excerpt}</div>
                   )}

@@ -5,6 +5,7 @@ import PublicFooter from '@/components/PublicFooter';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import ComparisonTable from '@/components/ComparisonTable';
 import TableOfContents, { extractHeadings, injectHeadingIds } from '@/components/TableOfContents';
+import RatingBadge from '@/components/RatingBadge';
 import { fetchContentByTypeAndSlug, fetchProductsForPublicContent } from '../../_actions/public';
 import type { ContentType } from '@/types/index';
 import styles from './page.module.css';
@@ -115,6 +116,12 @@ export default async function ContentPage({
             )}
             {content.author && <span>{content.author}</span>}
           </div>
+
+          {contentType === 'review' && firstProduct && firstProduct.rating !== null && firstProduct.rating !== undefined && (
+            <div className={styles.articleRating}>
+              <RatingBadge rating={firstProduct.rating as number} size="large" />
+            </div>
+          )}
 
           {content.excerpt && (
             <p className={styles.excerpt}>{content.excerpt}</p>

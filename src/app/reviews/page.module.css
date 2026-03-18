@@ -47,6 +47,10 @@
   color: #1a1a1a;
 }
 
+.itemRating {
+  margin: 6px 0;
+}
+
 .itemExcerpt {
   font-size: 14px;
   color: #666;
