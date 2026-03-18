@@ -1,0 +1,29 @@
+.card {
+  direction: rtl;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  background-color: #ffffff;
+  font-size: 0.85rem;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.name {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.cta {
+  font-size: 0.8rem;
+  color: #2563eb;
+  font-weight: 500;
+  margin-right: auto;
+}

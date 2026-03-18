@@ -1,0 +1,38 @@
+.card {
+  direction: rtl;
+  text-align: right;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.25rem;
+  background-color: #ffffff;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
+.name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  color: #1f2937;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 0.75rem;
+}
+
+.pricingBadge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #7c3aed;
+  background-color: #f5f3ff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
