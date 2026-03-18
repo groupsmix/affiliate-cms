@@ -8,6 +8,7 @@ import {
 } from '@/app/_actions/public';
 import type { ContentType } from '@/types/index';
 import StarRating from '@/components/StarRating';
+import { appendUtm } from '@/lib/utm';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -60,9 +61,34 @@ export async function generateMetadata({
   if (!content) {
     return { title: 'غير موجود' };
   }
+  const title = content.meta_title || content.title;
+  const description =
+    content.meta_description || content.excerpt || undefined;
+  const url = `/${params.contentType}/${params.slug}`;
+
   return {
-    title: content.meta_title || content.title,
-    description: content.meta_description || content.excerpt || undefined,
+    title,
+    description,
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url,
+      ...(content.published_at && {
+        publishedTime: content.published_at,
+      }),
+      ...(content.cover_image_url && {
+        images: [{ url: content.cover_image_url }],
+      }),
+    },
+    twitter: {
+      card: content.cover_image_url ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      ...(content.cover_image_url && {
+        images: [content.cover_image_url],
+      }),
+    },
   };
 }
 
@@ -171,9 +197,15 @@ export default async function ContentPage({
                     string | boolean | number | null
                   > | null;
                   if (!product) return null;
-                  const affiliateUrl =
+                  const rawAffiliateUrl =
                     (lp.custom_affiliate_url as string) ||
                     (product.affiliate_url as string);
+                  const affiliateUrl = rawAffiliateUrl
+                    ? appendUtm(rawAffiliateUrl, {
+                        campaign: slug,
+                        content: `product-card-${product.name}`,
+                      })
+                    : null;
                   return (
                     <div
                       key={lp.id as string}
