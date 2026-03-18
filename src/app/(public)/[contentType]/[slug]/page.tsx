@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import {
   fetchContentByTypeAndSlug,
   fetchProductsForPublicContent,
+  fetchRelatedContent,
 } from '@/app/_actions/public';
 import type { ContentType } from '@/types/index';
 import styles from './page.module.css';
@@ -84,7 +85,10 @@ export default async function ContentPage({
     notFound();
   }
 
-  const linkedProducts = await fetchProductsForPublicContent(content.id);
+  const [linkedProducts, relatedArticles] = await Promise.all([
+    fetchProductsForPublicContent(content.id),
+    fetchRelatedContent(contentType as ContentType, content.id),
+  ]);
   const sectionLabel = SECTION_AR[contentType] || contentType;
   const sectionLink = SECTION_LINKS[contentType] || '/';
 
@@ -146,6 +150,41 @@ export default async function ContentPage({
             className={styles.body}
             dangerouslySetInnerHTML={{ __html: content.body }}
           />
+        )}
+
+        {/* Related articles */}
+        {relatedArticles.length > 0 && (
+          <section className={styles.relatedSection}>
+            <h2 className={styles.relatedTitle}>مقالات ذات صلة</h2>
+            <div className={styles.relatedGrid}>
+              {relatedArticles.map(
+                (article: {
+                  id: string;
+                  title: string;
+                  slug: string;
+                  content_type: string;
+                  excerpt: string | null;
+                  published_at: string | null;
+                }) => (
+                  <Link
+                    key={article.id}
+                    href={`/${article.content_type}/${article.slug}`}
+                    className={styles.relatedCard}
+                  >
+                    <span className={styles.relatedBadge}>
+                      {TYPE_AR[article.content_type] || article.content_type}
+                    </span>
+                    <h3 className={styles.relatedCardTitle}>{article.title}</h3>
+                    {article.excerpt && (
+                      <p className={styles.relatedCardExcerpt}>
+                        {article.excerpt}
+                      </p>
+                    )}
+                  </Link>
+                ),
+              )}
+            </div>
+          </section>
         )}
 
         {/* Products */}

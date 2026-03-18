@@ -59,6 +59,26 @@ export async function fetchContentByTypeAndSlug(contentType: ContentType, slug: 
   return data;
 }
 
+export async function fetchRelatedContent(
+  contentType: ContentType,
+  excludeId: string,
+  limit = 4,
+) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('content')
+    .select('id, title, slug, content_type, excerpt, published_at')
+    .eq('content_type', contentType)
+    .eq('status', 'published')
+    .eq('is_active', true)
+    .neq('id', excludeId)
+    .order('published_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchProductsForPublicContent(contentId: string) {
   const supabase = getSupabase();
   const { data, error } = await supabase
