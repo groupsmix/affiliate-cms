@@ -1,0 +1,16 @@
+import type { MetadataRoute } from 'next';
+
+const SITE_URL = process.env.SITE_URL || 'https://example.com';
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/admin/', '/_actions/'],
+      },
+    ],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+  };
+}
