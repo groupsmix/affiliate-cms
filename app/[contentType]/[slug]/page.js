@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getContentBySlug, getProductsByContentId } from '../../../lib/queries.js';
 import ReviewTemplate from '../../../components/templates/ReviewTemplate.js';
+import BestTemplate from '../../../components/templates/BestTemplate.js';
 
 const VALID_CONTENT_TYPES = new Set([
   'best',
@@ -60,6 +61,17 @@ export default async function ContentPage({ params }) {
         pros={[]}
         cons={[]}
         subRatings={[]}
+      />
+    );
+  }
+
+  if (content.content_type === 'best') {
+    return (
+      <BestTemplate
+        content={content}
+        products={products}
+        relatedContent={[]}
+        faqItems={[]}
       />
     );
   }
