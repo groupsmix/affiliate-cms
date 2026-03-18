@@ -50,9 +50,23 @@ export interface Content {
   is_active: boolean;
   meta_title: string | null;
   meta_description: string | null;
+  faq_items: FaqItem[];
+  pros: string[];
+  cons: string[];
+  sub_ratings: SubRating[];
   published_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface SubRating {
+  label: string;
+  score: number;
 }
 
 export interface ContentProduct {

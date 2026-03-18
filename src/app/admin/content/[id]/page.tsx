@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { fetchContentById, updateContentAction, setContentStatusAction, deactivateContentAction } from '../../_actions/content';
 import { fetchProductsForContent, linkProductAction, unlinkProductAction } from '../../_actions/content-products';
 import { fetchProductsList } from '../../_actions/products';
-import type { ContentStatus } from '@/types/index';
+import { sanitizeHtml } from '@/lib/sanitize';
+import type { ContentStatus, FaqItem, SubRating } from '@/types/index';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +19,11 @@ export default async function EditContentPage({ params }: { params: { id: string
   const allProducts = await fetchProductsList();
 
   const updateWithId = updateContentAction.bind(null, id);
+
+  const faqItems: FaqItem[] = (content.faq_items as FaqItem[]) ?? [];
+  const pros: string[] = (content.pros as string[]) ?? [];
+  const cons: string[] = (content.cons as string[]) ?? [];
+  const subRatings: SubRating[] = (content.sub_ratings as SubRating[]) ?? [];
 
   async function handleSetStatus(formData: FormData) {
     'use server';
@@ -100,7 +106,7 @@ export default async function EditContentPage({ params }: { params: { id: string
       {/* Edit Content Form */}
       <form action={updateWithId} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
         <label>
-          Body
+          Body (HTML)
           <textarea
             name="body"
             defaultValue={content.body ?? ''}
@@ -108,6 +114,16 @@ export default async function EditContentPage({ params }: { params: { id: string
             style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px', fontFamily: 'monospace', fontSize: '13px' }}
           />
         </label>
+
+        {content.body && (
+          <details style={{ marginBottom: '8px' }}>
+            <summary style={{ cursor: 'pointer', color: '#555' }}>Preview (sanitized)</summary>
+            <div
+              style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '4px', marginTop: '4px' }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(content.body) }}
+            />
+          </details>
+        )}
 
         <label>
           Excerpt
@@ -124,6 +140,7 @@ export default async function EditContentPage({ params }: { params: { id: string
           <input
             name="meta_title"
             defaultValue={content.meta_title ?? ''}
+            maxLength={200}
             style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px' }}
           />
         </label>
@@ -134,7 +151,50 @@ export default async function EditContentPage({ params }: { params: { id: string
             name="meta_description"
             defaultValue={content.meta_description ?? ''}
             rows={2}
+            maxLength={500}
             style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px' }}
+          />
+        </label>
+
+        <label>
+          Pros (one per line)
+          <textarea
+            name="pros"
+            defaultValue={pros.join('\n')}
+            rows={4}
+            style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px' }}
+          />
+        </label>
+
+        <label>
+          Cons (one per line)
+          <textarea
+            name="cons"
+            defaultValue={cons.join('\n')}
+            rows={4}
+            style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px' }}
+          />
+        </label>
+
+        <label>
+          FAQ Items (JSON array of {'{'}question, answer{'}'})
+          <textarea
+            name="faq_items"
+            defaultValue={faqItems.length > 0 ? JSON.stringify(faqItems, null, 2) : ''}
+            rows={6}
+            placeholder={'[\n  {"question": "...", "answer": "..."}\n]'}
+            style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px', fontFamily: 'monospace', fontSize: '13px' }}
+          />
+        </label>
+
+        <label>
+          Sub-Ratings (JSON array of {'{'}label, score{'}'})
+          <textarea
+            name="sub_ratings"
+            defaultValue={subRatings.length > 0 ? JSON.stringify(subRatings, null, 2) : ''}
+            rows={4}
+            placeholder={'[\n  {"label": "Ease of Use", "score": 4}\n]'}
+            style={{ display: 'block', width: '100%', padding: '6px', marginTop: '4px', fontFamily: 'monospace', fontSize: '13px' }}
           />
         </label>
 
