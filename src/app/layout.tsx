@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans_Arabic } from 'next/font/google';
+import { siteConfig } from '@/lib/site-config';
 import './globals.css';
 
 const font = IBM_Plex_Sans_Arabic({
@@ -8,30 +9,25 @@ const font = IBM_Plex_Sans_Arabic({
   display: 'swap',
 });
 
-const SITE_URL = process.env.SITE_URL || 'https://example.com';
-const SITE_NAME = 'أدوات البريد';
-const DEFAULT_DESCRIPTION =
-  'مراجعات ومقارنات عملية تساعدك تختار أداة النشرات البريدية والتسويق بالإيميل المناسبة لصناع المحتوى العرب';
-
 export const metadata: Metadata = {
   title: {
-    default: 'أدوات البريد — أفضل أدوات النشرات البريدية والتسويق بالإيميل',
-    template: '%s — أدوات البريد',
+    default: siteConfig.seo.titleDefault,
+    template: siteConfig.seo.titleTemplate,
   },
-  description: DEFAULT_DESCRIPTION,
-  metadataBase: new URL(SITE_URL),
+  description: siteConfig.seo.description,
+  metadataBase: new URL(siteConfig.url),
   openGraph: {
     type: 'website',
-    locale: 'ar_AR',
-    siteName: SITE_NAME,
-    title: 'أدوات البريد — أفضل أدوات النشرات البريدية والتسويق بالإيميل',
-    description: DEFAULT_DESCRIPTION,
-    url: SITE_URL,
+    locale: siteConfig.locale,
+    siteName: siteConfig.name,
+    title: siteConfig.seo.titleDefault,
+    description: siteConfig.seo.description,
+    url: siteConfig.url,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'أدوات البريد — أفضل أدوات النشرات البريدية والتسويق بالإيميل',
-    description: DEFAULT_DESCRIPTION,
+    title: siteConfig.seo.titleDefault,
+    description: siteConfig.seo.description,
   },
 };
 
@@ -41,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang={siteConfig.lang} dir={siteConfig.dir}>
       <body className={font.className}>{children}</body>
     </html>
   );

@@ -1,11 +1,11 @@
+import { siteConfig } from '@/lib/site-config';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
 
 export const metadata = {
-  title: 'عن الموقع',
-  description:
-    'تعرف على موقع أدوات البريد ورسالتنا في مساعدة صناع المحتوى العرب في اختيار أدوات النشرات البريدية',
+  title: siteConfig.pages.about.title,
+  description: siteConfig.pages.about.description,
 };
 
 export default function AboutPage() {

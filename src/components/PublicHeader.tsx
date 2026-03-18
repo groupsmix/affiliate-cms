@@ -2,15 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { siteConfig } from '@/lib/site-config';
 import styles from './PublicHeader.module.css';
-
-const NAV_ITEMS = [
-  { href: '/', label: 'الرئيسية' },
-  { href: '/reviews', label: 'المراجعات' },
-  { href: '/comparisons', label: 'المقارنات' },
-  { href: '/guides', label: 'الأدلة' },
-  { href: '/about', label: 'عن الموقع' },
-];
 
 export default function PublicHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +12,7 @@ export default function PublicHeader() {
     <header className={styles.header}>
       <div className={styles.headerInner}>
         <Link href="/" className={styles.logo}>
-          أدوات البريد
+          {siteConfig.name}
         </Link>
 
         <button
@@ -35,7 +28,7 @@ export default function PublicHeader() {
 
         <nav className={`${styles.nav} ${isOpen ? styles.navOpen : ''}`}>
           <ul className={styles.navList}>
-            {NAV_ITEMS.map((item) => (
+            {siteConfig.nav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}

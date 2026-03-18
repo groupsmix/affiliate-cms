@@ -1,5 +1,6 @@
 import { fetchPublishedContentByType } from '@/app/_actions/public';
 import { averageRating } from '@/lib/rating';
+import { siteConfig } from '@/lib/site-config';
 import ContentList from '@/components/ContentList';
 import styles from './page.module.css';
 
@@ -7,8 +8,8 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'المراجعات',
-  description: 'مراجعات تفصيلية لأدوات النشرات البريدية والتسويق بالإيميل',
+  title: siteConfig.pages.reviews.title,
+  description: siteConfig.pages.reviews.description,
 };
 
 export default async function ReviewsPage() {
@@ -25,15 +26,14 @@ export default async function ReviewsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>المراجعات</h1>
+        <h1 className={styles.title}>{siteConfig.pages.reviews.title}</h1>
         <p className={styles.subtitle}>
-          مراجعات تفصيلية لأدوات النشرات البريدية والتسويق بالإيميل — الميزات
-          والعيوب والتسعير وتجربة الاستخدام
+          {siteConfig.pages.reviews.subtitle}
         </p>
       </div>
       <ContentList
         articles={articles}
-        emptyMessage="لا توجد مراجعات منشورة بعد."
+        emptyMessage={siteConfig.pages.reviews.empty}
       />
     </div>
   );

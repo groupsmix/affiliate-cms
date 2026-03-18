@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { fetchPublishedContent } from '@/app/_actions/public';
 import { averageRating } from '@/lib/rating';
+import { siteConfig } from '@/lib/site-config';
 import ScoreBadge from '@/components/ScoreBadge';
+import NewsletterForm from '@/components/NewsletterForm';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -17,13 +19,6 @@ interface ContentItem {
   averageRating?: number | null;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  review: 'مراجعة',
-  comparison: 'مقارنة',
-  best: 'الأفضل',
-  problem: 'حلول',
-  alternative: 'بدائل',
-};
 
 function contentUrl(item: ContentItem): string {
   return `/${item.content_type}/${item.slug}`;
@@ -53,20 +48,19 @@ export default async function HomePage() {
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroInner}>
-          <span className={styles.heroBadge}>دليلك لأدوات البريد الإلكتروني</span>
+          <span className={styles.heroBadge}>{siteConfig.hero.badge}</span>
           <h1 className={styles.heroTitle}>
-            اختر أداة النشرات البريدية المناسبة لمشروعك
+            {siteConfig.hero.title}
           </h1>
           <p className={styles.heroDesc}>
-            مراجعات صادقة ومقارنات عملية لأشهر أدوات التسويق بالإيميل والنشرات
-            البريدية، مصممة خصيصًا لصناع المحتوى والمسوقين العرب.
+            {siteConfig.hero.description}
           </p>
           <div className={styles.heroCtas}>
             <Link href="/reviews" className={styles.heroCtaPrimary}>
-              تصفح المراجعات
+              {siteConfig.hero.ctaPrimary}
             </Link>
             <Link href="/comparisons" className={styles.heroCtaSecondary}>
-              قارن بين الأدوات
+              {siteConfig.hero.ctaSecondary}
             </Link>
           </div>
         </div>
@@ -75,30 +69,17 @@ export default async function HomePage() {
       {/* Start Here */}
       <section className={styles.section}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>ابدأ من هنا</h2>
+          <h2 className={styles.sectionTitle}>{siteConfig.startHere.title}</h2>
           <p className={styles.sectionDesc}>
-            لا تعرف من أين تبدأ؟ هذه الأدلة تساعدك تختار بسرعة.
+            {siteConfig.startHere.description}
           </p>
           <div className={styles.startGrid}>
-            <Link href="/reviews" className={styles.startCard}>
-              <h3 className={styles.startCardTitle}>مراجعات الأدوات</h3>
-              <p className={styles.startCardDesc}>
-                مراجعات تفصيلية لكل أداة بريد إلكتروني — الميزات والعيوب
-                والتسعير
-              </p>
-            </Link>
-            <Link href="/comparisons" className={styles.startCard}>
-              <h3 className={styles.startCardTitle}>مقارنات مباشرة</h3>
-              <p className={styles.startCardDesc}>
-                مقارنات عملية بين الأدوات المتنافسة لمساعدتك في اتخاذ القرار
-              </p>
-            </Link>
-            <Link href="/guides" className={styles.startCard}>
-              <h3 className={styles.startCardTitle}>أدلة الأفضل</h3>
-              <p className={styles.startCardDesc}>
-                أفضل الأدوات لكل حالة استخدام — للمبتدئين والمتقدمين
-              </p>
-            </Link>
+            {siteConfig.startHere.cards.map((card) => (
+              <Link key={card.href} href={card.href} className={styles.startCard}>
+                <h3 className={styles.startCardTitle}>{card.title}</h3>
+                <p className={styles.startCardDesc}>{card.description}</p>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -108,7 +89,7 @@ export default async function HomePage() {
         <section className={`${styles.section} ${styles.sectionAlt}`}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>أحدث المقالات</h2>
+              <h2 className={styles.sectionTitle}>{siteConfig.sections.latestArticles}</h2>
             </div>
             <div className={styles.cardGrid}>
               {latest.map((article) => (
@@ -118,7 +99,7 @@ export default async function HomePage() {
                   className={styles.card}
                 >
                   <span className={styles.cardBadge}>
-                    {TYPE_LABELS[article.content_type] || article.content_type}
+                    {siteConfig.typeLabels[article.content_type] || article.content_type}
                   </span>
                   <div className={styles.cardTitleRow}>
                     <h3 className={styles.cardTitle}>{article.title}</h3>
@@ -146,9 +127,9 @@ export default async function HomePage() {
         <section className={styles.section}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>أحدث المراجعات</h2>
+              <h2 className={styles.sectionTitle}>{siteConfig.sections.latestReviews}</h2>
               <Link href="/reviews" className={styles.sectionLink}>
-                عرض الكل
+                {siteConfig.sections.viewAll}
               </Link>
             </div>
             <div className={styles.cardGrid}>
@@ -158,7 +139,7 @@ export default async function HomePage() {
                   href={contentUrl(article)}
                   className={styles.card}
                 >
-                  <span className={styles.cardBadge}>مراجعة</span>
+                  <span className={styles.cardBadge}>{siteConfig.typeLabels.review}</span>
                   <div className={styles.cardTitleRow}>
                     <h3 className={styles.cardTitle}>{article.title}</h3>
                     {typeof article.averageRating === 'number' && (
@@ -185,9 +166,9 @@ export default async function HomePage() {
         <section className={`${styles.section} ${styles.sectionAlt}`}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>أحدث المقارنات</h2>
+              <h2 className={styles.sectionTitle}>{siteConfig.sections.latestComparisons}</h2>
               <Link href="/comparisons" className={styles.sectionLink}>
-                عرض الكل
+                {siteConfig.sections.viewAll}
               </Link>
             </div>
             <div className={styles.cardGrid}>
@@ -197,7 +178,7 @@ export default async function HomePage() {
                   href={contentUrl(article)}
                   className={styles.card}
                 >
-                  <span className={styles.cardBadge}>مقارنة</span>
+                  <span className={styles.cardBadge}>{siteConfig.typeLabels.comparison}</span>
                   <div className={styles.cardTitleRow}>
                     <h3 className={styles.cardTitle}>{article.title}</h3>
                     {typeof article.averageRating === 'number' && (
@@ -224,9 +205,9 @@ export default async function HomePage() {
         <section className={styles.section}>
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>الأدلة</h2>
+              <h2 className={styles.sectionTitle}>{siteConfig.sections.guides}</h2>
               <Link href="/guides" className={styles.sectionLink}>
-                عرض الكل
+                {siteConfig.sections.viewAll}
               </Link>
             </div>
             <div className={styles.cardGrid}>
@@ -237,7 +218,7 @@ export default async function HomePage() {
                   className={styles.card}
                 >
                   <span className={styles.cardBadge}>
-                    {TYPE_LABELS[article.content_type] || article.content_type}
+                    {siteConfig.typeLabels[article.content_type] || article.content_type}
                   </span>
                   <div className={styles.cardTitleRow}>
                     <h3 className={styles.cardTitle}>{article.title}</h3>
@@ -263,37 +244,30 @@ export default async function HomePage() {
       {/* Trust Strip */}
       <section className={styles.trustStrip}>
         <div className={styles.trustInner}>
-          <h2 className={styles.trustTitle}>لماذا تثق بنا؟</h2>
+          <h2 className={styles.trustTitle}>{siteConfig.trust.title}</h2>
           <div className={styles.trustGrid}>
-            <div className={styles.trustItem}>
-              <h3 className={styles.trustItemTitle}>تجربة حقيقية</h3>
-              <p className={styles.trustItemDesc}>
-                كل مراجعة مبنية على تجربة فعلية للأداة وليست مجرد نقل من مصادر
-                أخرى
-              </p>
-            </div>
-            <div className={styles.trustItem}>
-              <h3 className={styles.trustItemTitle}>تقييم موضوعي</h3>
-              <p className={styles.trustItemDesc}>
-                نقدم الميزات والعيوب بصراحة لمساعدتك في اتخاذ القرار الأفضل
-              </p>
-            </div>
-            <div className={styles.trustItem}>
-              <h3 className={styles.trustItemTitle}>محتوى عربي أصيل</h3>
-              <p className={styles.trustItemDesc}>
-                محتوى مكتوب بالعربية من البداية وليس ترجمة آلية من مصادر أجنبية
-              </p>
-            </div>
+            {siteConfig.trust.items.map((item) => (
+              <div key={item.title} className={styles.trustItem}>
+                <h3 className={styles.trustItemTitle}>{item.title}</h3>
+                <p className={styles.trustItemDesc}>{item.description}</p>
+              </div>
+            ))}
           </div>
           <div className={styles.trustDisclosure}>
             <p>
-              هذا الموقع يحتوي على روابط تسويقية (affiliate links). عند الشراء
-              من خلال هذه الروابط، قد نحصل على عمولة دون أي تكلفة إضافية عليك.{' '}
+              {siteConfig.trust.disclosure}{' '}
               <Link href="/disclosure" className={styles.trustDisclosureLink}>
-                اقرأ سياسة الإفصاح الكاملة
+                {siteConfig.trust.disclosureLink}
               </Link>
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className={styles.section}>
+        <div className={styles.sectionInner}>
+          <NewsletterForm />
         </div>
       </section>
     </>
