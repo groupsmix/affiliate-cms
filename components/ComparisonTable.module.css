@@ -1,0 +1,55 @@
+.wrapper {
+  direction: rtl;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+.headerCell {
+  padding: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+  vertical-align: bottom;
+  text-align: center;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.4rem;
+}
+
+.productName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.labelCell {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+  white-space: nowrap;
+}
+
+.valueCell {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  color: #374151;
+  text-align: center;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ctaCell {
+  padding: 0.75rem;
+  text-align: center;
+}
