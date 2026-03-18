@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getContentBySlug, getProductsByContentId } from '../../../lib/queries.js';
+import ReviewTemplate from '../../../components/templates/ReviewTemplate.js';
 
 const VALID_CONTENT_TYPES = new Set([
   'best',
@@ -48,6 +49,20 @@ export default async function ContentPage({ params }) {
   }
 
   const products = await getProductsByContentId(content.id);
+
+  if (content.content_type === 'review') {
+    return (
+      <ReviewTemplate
+        content={content}
+        products={products}
+        relatedContent={[]}
+        faqItems={[]}
+        pros={[]}
+        cons={[]}
+        subRatings={[]}
+      />
+    );
+  }
 
   return (
     <pre>{JSON.stringify({ content, products }, null, 2)}</pre>
