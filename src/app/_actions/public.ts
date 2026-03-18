@@ -16,6 +16,34 @@ export async function fetchPublishedContent() {
   return data;
 }
 
+export async function fetchPublishedContentByType(contentType: ContentType) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('content')
+    .select('*')
+    .eq('content_type', contentType)
+    .eq('status', 'published')
+    .eq('is_active', true)
+    .order('published_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchPublishedContentByTypes(contentTypes: ContentType[]) {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('content')
+    .select('*')
+    .in('content_type', contentTypes)
+    .eq('status', 'published')
+    .eq('is_active', true)
+    .order('published_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchContentByTypeAndSlug(contentType: ContentType, slug: string) {
   const supabase = getSupabase();
   const { data, error } = await supabase
