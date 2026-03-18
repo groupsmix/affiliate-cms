@@ -244,6 +244,11 @@
   margin-bottom: 4px;
 }
 
+.productRating {
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
 .productPricing {
   font-size: 13px;
   color: var(--color-text-tertiary);

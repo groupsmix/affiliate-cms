@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { fetchPublishedContent } from '@/app/_actions/public';
+import { averageRating } from '@/lib/rating';
+import ScoreBadge from '@/components/ScoreBadge';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -12,6 +14,7 @@ interface ContentItem {
   content_type: string;
   excerpt: string | null;
   published_at: string | null;
+  averageRating?: number | null;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -27,7 +30,15 @@ function contentUrl(item: ContentItem): string {
 }
 
 export default async function HomePage() {
-  const articles = (await fetchPublishedContent()) as ContentItem[];
+  const raw = await fetchPublishedContent();
+  const articles = raw.map((a: Record<string, unknown>) => ({
+    ...a,
+    averageRating: averageRating(
+      a.content_products as
+        | Array<{ products: { rating: number | null } | null }>
+        | undefined,
+    ),
+  })) as ContentItem[];
 
   const reviews = articles.filter((a) => a.content_type === 'review');
   const comparisons = articles.filter((a) => a.content_type === 'comparison');
@@ -109,7 +120,12 @@ export default async function HomePage() {
                   <span className={styles.cardBadge}>
                     {TYPE_LABELS[article.content_type] || article.content_type}
                   </span>
-                  <h3 className={styles.cardTitle}>{article.title}</h3>
+                  <div className={styles.cardTitleRow}>
+                    <h3 className={styles.cardTitle}>{article.title}</h3>
+                    {typeof article.averageRating === 'number' && (
+                      <ScoreBadge score={article.averageRating} max={5} />
+                    )}
+                  </div>
                   {article.excerpt && (
                     <p className={styles.cardExcerpt}>{article.excerpt}</p>
                   )}
@@ -143,7 +159,12 @@ export default async function HomePage() {
                   className={styles.card}
                 >
                   <span className={styles.cardBadge}>مراجعة</span>
-                  <h3 className={styles.cardTitle}>{article.title}</h3>
+                  <div className={styles.cardTitleRow}>
+                    <h3 className={styles.cardTitle}>{article.title}</h3>
+                    {typeof article.averageRating === 'number' && (
+                      <ScoreBadge score={article.averageRating} max={5} />
+                    )}
+                  </div>
                   {article.excerpt && (
                     <p className={styles.cardExcerpt}>{article.excerpt}</p>
                   )}
@@ -177,7 +198,12 @@ export default async function HomePage() {
                   className={styles.card}
                 >
                   <span className={styles.cardBadge}>مقارنة</span>
-                  <h3 className={styles.cardTitle}>{article.title}</h3>
+                  <div className={styles.cardTitleRow}>
+                    <h3 className={styles.cardTitle}>{article.title}</h3>
+                    {typeof article.averageRating === 'number' && (
+                      <ScoreBadge score={article.averageRating} max={5} />
+                    )}
+                  </div>
                   {article.excerpt && (
                     <p className={styles.cardExcerpt}>{article.excerpt}</p>
                   )}
@@ -213,7 +239,12 @@ export default async function HomePage() {
                   <span className={styles.cardBadge}>
                     {TYPE_LABELS[article.content_type] || article.content_type}
                   </span>
-                  <h3 className={styles.cardTitle}>{article.title}</h3>
+                  <div className={styles.cardTitleRow}>
+                    <h3 className={styles.cardTitle}>{article.title}</h3>
+                    {typeof article.averageRating === 'number' && (
+                      <ScoreBadge score={article.averageRating} max={5} />
+                    )}
+                  </div>
                   {article.excerpt && (
                     <p className={styles.cardExcerpt}>{article.excerpt}</p>
                   )}

@@ -1,0 +1,26 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #f59e0b;
+  direction: ltr;
+}
+
+.star {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.empty {
+  color: var(--color-border);
+}
+
+.value {
+  margin-inline-start: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1;
+}

@@ -1,4 +1,5 @@
 import { fetchPublishedContentByType } from '@/app/_actions/public';
+import { averageRating } from '@/lib/rating';
 import ContentList from '@/components/ContentList';
 import styles from './page.module.css';
 
@@ -11,7 +12,15 @@ export const metadata = {
 };
 
 export default async function ComparisonsPage() {
-  const articles = await fetchPublishedContentByType('comparison');
+  const raw = await fetchPublishedContentByType('comparison');
+  const articles = raw.map((a) => ({
+    ...a,
+    averageRating: averageRating(
+      (a as Record<string, unknown>).content_products as
+        | Array<{ products: { rating: number | null } | null }>
+        | undefined,
+    ),
+  }));
 
   return (
     <div className={styles.container}>
