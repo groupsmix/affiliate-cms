@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import PublicHeader from '@/components/PublicHeader';
 import PublicFooter from '@/components/PublicFooter';
+import SchemaMarkup from '@/components/SchemaMarkup';
 import { fetchContentByTypeAndSlug, fetchProductsForPublicContent } from '../../_actions/public';
 import type { ContentType } from '@/types/index';
 import styles from './page.module.css';
@@ -48,8 +49,50 @@ export default async function ContentPage({
   const sectionLabel = CONTENT_TYPE_LABELS[contentType] || contentType;
   const sectionLink = CONTENT_TYPE_LINKS[contentType] || '/';
 
+  const firstProduct = linkedProducts.length > 0
+    ? (linkedProducts[0].products as Record<string, string | boolean | number | null> | null)
+    : null;
+
   return (
     <>
+      {contentType === 'review' ? (
+        <SchemaMarkup
+          type="review"
+          title={content.title}
+          excerpt={content.excerpt}
+          author={content.author}
+          publishedAt={content.published_at}
+          slug={`${contentType}/${content.slug}`}
+          rating={firstProduct ? (firstProduct.rating as number | null) : null}
+          productName={firstProduct ? (firstProduct.name as string) : null}
+        />
+      ) : (
+        <SchemaMarkup
+          type="article"
+          title={content.title}
+          excerpt={content.excerpt}
+          author={content.author}
+          publishedAt={content.published_at}
+          slug={`${contentType}/${content.slug}`}
+          contentType={contentType}
+        />
+      )}
+
+      {linkedProducts.map((lp: Record<string, unknown>) => {
+        const prod = lp.products as Record<string, string | boolean | number | null> | null;
+        if (!prod) return null;
+        return (
+          <SchemaMarkup
+            key={lp.id as string}
+            type="product"
+            name={prod.name as string}
+            description={prod.description as string | null}
+            rating={prod.rating as number | null}
+            url={prod.website_url as string}
+          />
+        );
+      })}
+
       <PublicHeader />
       <div className={styles.container}>
         <nav className={styles.breadcrumb}>
