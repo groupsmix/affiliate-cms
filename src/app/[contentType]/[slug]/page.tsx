@@ -4,6 +4,7 @@ import PublicHeader from '@/components/PublicHeader';
 import PublicFooter from '@/components/PublicFooter';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import ComparisonTable from '@/components/ComparisonTable';
+import TableOfContents, { extractHeadings, injectHeadingIds } from '@/components/TableOfContents';
 import { fetchContentByTypeAndSlug, fetchProductsForPublicContent } from '../../_actions/public';
 import type { ContentType } from '@/types/index';
 import styles from './page.module.css';
@@ -139,12 +140,19 @@ export default async function ContentPage({
             />
           )}
 
-          {content.body && (
-            <div
-              className={styles.body}
-              dangerouslySetInnerHTML={{ __html: content.body }}
-            />
-          )}
+          {content.body && (() => {
+            const processedBody = injectHeadingIds(content.body);
+            const headings = extractHeadings(processedBody);
+            return (
+              <>
+                <TableOfContents headings={headings} />
+                <div
+                  className={styles.body}
+                  dangerouslySetInnerHTML={{ __html: processedBody }}
+                />
+              </>
+            );
+          })()}
         </article>
 
         {linkedProducts.length > 0 && (
