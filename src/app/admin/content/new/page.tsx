@@ -2,6 +2,7 @@ import { createContentAction } from '../../_actions/content';
 import { fetchCategories } from '../../_actions/categories';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export default async function NewContentPage() {
   const categories = await fetchCategories();

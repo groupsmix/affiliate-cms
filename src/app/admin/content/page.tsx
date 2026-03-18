@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { fetchContentList } from '../_actions/content';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export default async function ContentListPage() {
   const rows = await fetchContentList();
