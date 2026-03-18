@@ -4,9 +4,11 @@ import type { Metadata } from 'next';
 import {
   fetchContentByTypeAndSlug,
   fetchProductsForPublicContent,
+  fetchRelatedContent,
 } from '@/app/_actions/public';
 import type { ContentType } from '@/types/index';
 import StarRating from '@/components/StarRating';
+import { appendUtm } from '@/lib/utm';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -59,9 +61,34 @@ export async function generateMetadata({
   if (!content) {
     return { title: 'غير موجود' };
   }
+  const title = content.meta_title || content.title;
+  const description =
+    content.meta_description || content.excerpt || undefined;
+  const url = `/${params.contentType}/${params.slug}`;
+
   return {
-    title: content.meta_title || content.title,
-    description: content.meta_description || content.excerpt || undefined,
+    title,
+    description,
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url,
+      ...(content.published_at && {
+        publishedTime: content.published_at,
+      }),
+      ...(content.cover_image_url && {
+        images: [{ url: content.cover_image_url }],
+      }),
+    },
+    twitter: {
+      card: content.cover_image_url ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      ...(content.cover_image_url && {
+        images: [content.cover_image_url],
+      }),
+    },
   };
 }
 
@@ -85,7 +112,14 @@ export default async function ContentPage({
     notFound();
   }
 
-  const linkedProducts = await fetchProductsForPublicContent(content.id);
+  const [linkedProducts, relatedArticles] = await Promise.all([
+    fetchProductsForPublicContent(content.id),
+    fetchRelatedContent(
+      content.id,
+      contentType as ContentType,
+      content.category_id ?? null,
+    ),
+  ]);
   const sectionLabel = SECTION_AR[contentType] || contentType;
   const sectionLink = SECTION_LINKS[contentType] || '/';
 
@@ -163,9 +197,15 @@ export default async function ContentPage({
                     string | boolean | number | null
                   > | null;
                   if (!product) return null;
-                  const affiliateUrl =
+                  const rawAffiliateUrl =
                     (lp.custom_affiliate_url as string) ||
                     (product.affiliate_url as string);
+                  const affiliateUrl = rawAffiliateUrl
+                    ? appendUtm(rawAffiliateUrl, {
+                        campaign: slug,
+                        content: `product-card-${product.name}`,
+                      })
+                    : null;
                   return (
                     <div
                       key={lp.id as string}
@@ -209,6 +249,38 @@ export default async function ContentPage({
           </section>
         )}
       </article>
+
+      {/* Related Articles */}
+      {relatedArticles && relatedArticles.length > 0 && (
+        <section className={styles.relatedSection}>
+          <h2 className={styles.relatedTitle}>مقالات ذات صلة</h2>
+          <div className={styles.relatedGrid}>
+            {relatedArticles.map(
+              (ra: {
+                id: string;
+                title: string;
+                slug: string;
+                content_type: string;
+                excerpt: string | null;
+              }) => (
+                <Link
+                  key={ra.id}
+                  href={`/${ra.content_type}/${ra.slug}`}
+                  className={styles.relatedCard}
+                >
+                  <span className={styles.relatedBadge}>
+                    {TYPE_AR[ra.content_type] || ra.content_type}
+                  </span>
+                  <h3 className={styles.relatedCardTitle}>{ra.title}</h3>
+                  {ra.excerpt && (
+                    <p className={styles.relatedCardExcerpt}>{ra.excerpt}</p>
+                  )}
+                </Link>
+              ),
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

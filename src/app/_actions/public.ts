@@ -59,6 +59,45 @@ export async function fetchContentByTypeAndSlug(contentType: ContentType, slug: 
   return data;
 }
 
+export async function fetchRelatedContent(
+  contentId: string,
+  contentType: ContentType,
+  categoryId: string | null,
+  limit = 4,
+) {
+  const supabase = getSupabase();
+
+  // Prefer same-category articles; fall back to same content_type
+  if (categoryId) {
+    const { data, error } = await supabase
+      .from('content')
+      .select('id, title, slug, content_type, excerpt, published_at')
+      .eq('status', 'published')
+      .eq('is_active', true)
+      .eq('category_id', categoryId)
+      .neq('id', contentId)
+      .order('published_at', { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+    if (data && data.length > 0) return data;
+  }
+
+  // Fallback: same content_type
+  const { data, error } = await supabase
+    .from('content')
+    .select('id, title, slug, content_type, excerpt, published_at')
+    .eq('status', 'published')
+    .eq('is_active', true)
+    .eq('content_type', contentType)
+    .neq('id', contentId)
+    .order('published_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchProductsForPublicContent(contentId: string) {
   const supabase = getSupabase();
   const { data, error } = await supabase
