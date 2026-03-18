@@ -7,7 +7,7 @@ export async function fetchPublishedContent() {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('content')
-    .select('*')
+    .select('*, content_products(products(rating))')
     .eq('status', 'published')
     .eq('is_active', true)
     .order('published_at', { ascending: false });
@@ -20,7 +20,7 @@ export async function fetchPublishedContentByType(contentType: ContentType) {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('content')
-    .select('*')
+    .select('*, content_products(products(rating))')
     .eq('content_type', contentType)
     .eq('status', 'published')
     .eq('is_active', true)
@@ -34,7 +34,7 @@ export async function fetchPublishedContentByTypes(contentTypes: ContentType[]) 
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('content')
-    .select('*')
+    .select('*, content_products(products(rating))')
     .in('content_type', contentTypes)
     .eq('status', 'published')
     .eq('is_active', true)

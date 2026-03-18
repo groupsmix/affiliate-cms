@@ -200,10 +200,17 @@
   margin-bottom: 12px;
 }
 
+.cardTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .cardTitle {
   font-size: 17px;
   font-weight: 600;
-  margin-bottom: 8px;
   color: var(--color-text);
   line-height: 1.5;
 }
