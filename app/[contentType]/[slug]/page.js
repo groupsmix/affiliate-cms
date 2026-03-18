@@ -3,6 +3,7 @@ import { getContentBySlug, getProductsByContentId } from '../../../lib/queries.j
 import ReviewTemplate from '../../../components/templates/ReviewTemplate.js';
 import BestTemplate from '../../../components/templates/BestTemplate.js';
 import ComparisonTemplate from '../../../components/templates/ComparisonTemplate.js';
+import AlternativeTemplate from '../../../components/templates/AlternativeTemplate.js';
 
 const VALID_CONTENT_TYPES = new Set([
   'best',
@@ -80,6 +81,17 @@ export default async function ContentPage({ params }) {
   if (content.content_type === 'comparison') {
     return (
       <ComparisonTemplate
+        content={content}
+        products={products}
+        relatedContent={[]}
+        faqItems={[]}
+      />
+    );
+  }
+
+  if (content.content_type === 'alternative') {
+    return (
+      <AlternativeTemplate
         content={content}
         products={products}
         relatedContent={[]}
