@@ -4,6 +4,7 @@ import ReviewTemplate from '../../../components/templates/ReviewTemplate.js';
 import BestTemplate from '../../../components/templates/BestTemplate.js';
 import ComparisonTemplate from '../../../components/templates/ComparisonTemplate.js';
 import AlternativeTemplate from '../../../components/templates/AlternativeTemplate.js';
+import ProblemTemplate from '../../../components/templates/ProblemTemplate.js';
 
 const VALID_CONTENT_TYPES = new Set([
   'best',
@@ -92,6 +93,17 @@ export default async function ContentPage({ params }) {
   if (content.content_type === 'alternative') {
     return (
       <AlternativeTemplate
+        content={content}
+        products={products}
+        relatedContent={[]}
+        faqItems={[]}
+      />
+    );
+  }
+
+  if (content.content_type === 'problem') {
+    return (
+      <ProblemTemplate
         content={content}
         products={products}
         relatedContent={[]}
