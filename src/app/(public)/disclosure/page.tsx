@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import { siteConfig } from '@/lib/site-config';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
 
 export const metadata = {
-  title: 'سياسة الإفصاح',
-  description: 'سياسة الإفصاح عن الروابط التسويقية في موقع أدوات البريد',
+  title: siteConfig.pages.disclosure.title,
+  description: siteConfig.pages.disclosure.description,
 };
 
 export default function DisclosurePage() {

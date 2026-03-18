@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import styles from './layout.module.css';
 
 export default function AdminLayout({
   children,
@@ -6,19 +7,20 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px' }}>
-      <nav style={{
-        display: 'flex',
-        gap: '16px',
-        padding: '12px 0',
-        borderBottom: '1px solid #ddd',
-        marginBottom: '24px',
-      }}>
-        <strong style={{ marginRight: '16px' }}>Admin</strong>
-        <Link href="/admin/content">Content</Link>
-        <Link href="/admin/products">Products</Link>
-      </nav>
-      {children}
+    <div className={styles.wrapper}>
+      <aside className={styles.sidebar}>
+        <Link href="/admin" className={styles.brand}>Admin</Link>
+        <nav className={styles.nav}>
+          <Link href="/admin" className={styles.navLink}>Dashboard</Link>
+          <Link href="/admin/content" className={styles.navLink}>Content</Link>
+          <Link href="/admin/products" className={styles.navLink}>Products</Link>
+          <Link href="/admin/categories" className={styles.navLink}>Categories</Link>
+          <Link href="/admin/analytics" className={styles.navLink}>Analytics</Link>
+        </nav>
+      </aside>
+      <main className={styles.main}>
+        {children}
+      </main>
     </div>
   );
 }

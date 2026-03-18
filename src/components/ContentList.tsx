@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { siteConfig } from '@/lib/site-config';
 import ScoreBadge from './ScoreBadge';
 import styles from './ContentList.module.css';
 
@@ -12,13 +13,6 @@ interface ContentItem {
   averageRating?: number | null;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  review: 'مراجعة',
-  comparison: 'مقارنة',
-  best: 'الأفضل',
-  problem: 'حلول',
-  alternative: 'بدائل',
-};
 
 interface Props {
   articles: ContentItem[];
@@ -45,7 +39,7 @@ export default function ContentList({
         >
           {showBadge && (
             <span className={styles.badge}>
-              {TYPE_LABELS[article.content_type] || article.content_type}
+              {siteConfig.typeLabels[article.content_type] || article.content_type}
             </span>
           )}
           <div className={styles.titleRow}>

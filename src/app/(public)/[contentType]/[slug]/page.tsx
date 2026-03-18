@@ -7,8 +7,11 @@ import {
   fetchRelatedContent,
 } from '@/app/_actions/public';
 import type { ContentType } from '@/types/index';
+import { siteConfig } from '@/lib/site-config';
+import { renderMarkdown } from '@/lib/markdown';
 import StarRating from '@/components/StarRating';
 import { appendUtm } from '@/lib/utm';
+import JsonLd from '@/components/JsonLd';
 import styles from './page.module.css';
 
 export const runtime = 'edge';
@@ -22,29 +25,6 @@ const VALID_TYPES: ContentType[] = [
   'alternative',
 ];
 
-const TYPE_AR: Record<string, string> = {
-  review: 'مراجعة',
-  comparison: 'مقارنة',
-  best: 'الأفضل',
-  problem: 'حلول',
-  alternative: 'بدائل',
-};
-
-const SECTION_AR: Record<string, string> = {
-  review: 'المراجعات',
-  comparison: 'المقارنات',
-  best: 'الأدلة',
-  problem: 'الأدلة',
-  alternative: 'الأدلة',
-};
-
-const SECTION_LINKS: Record<string, string> = {
-  review: '/reviews',
-  comparison: '/comparisons',
-  best: '/guides',
-  problem: '/guides',
-  alternative: '/guides',
-};
 
 export async function generateMetadata({
   params,
@@ -52,14 +32,14 @@ export async function generateMetadata({
   params: { contentType: string; slug: string };
 }): Promise<Metadata> {
   if (!VALID_TYPES.includes(params.contentType as ContentType)) {
-    return { title: 'غير موجود' };
+    return { title: siteConfig.article.notFound };
   }
   const content = await fetchContentByTypeAndSlug(
     params.contentType as ContentType,
     params.slug,
   );
   if (!content) {
-    return { title: 'غير موجود' };
+    return { title: siteConfig.article.notFound };
   }
   const title = content.meta_title || content.title;
   const description =
@@ -120,15 +100,23 @@ export default async function ContentPage({
       content.category_id ?? null,
     ),
   ]);
-  const sectionLabel = SECTION_AR[contentType] || contentType;
-  const sectionLink = SECTION_LINKS[contentType] || '/';
+  const sectionLabel = siteConfig.sectionLabels[contentType] || contentType;
+  const sectionLink = siteConfig.sectionLinks[contentType] || '/';
 
   return (
     <div className={styles.container}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd
+        content={content}
+        contentType={contentType}
+        slug={slug}
+        linkedProducts={linkedProducts}
+      />
+
       {/* Breadcrumb */}
       <nav className={styles.breadcrumb} aria-label="التنقل">
         <Link href="/" className={styles.breadcrumbLink}>
-          الرئيسية
+          {siteConfig.article.breadcrumbHome}
         </Link>
         <span className={styles.breadcrumbSep} aria-hidden="true">
           ‹
@@ -146,7 +134,7 @@ export default async function ContentPage({
         {/* Header */}
         <header className={styles.articleHeader}>
           <span className={styles.badge}>
-            {TYPE_AR[contentType] || contentType}
+            {siteConfig.typeLabels[contentType] || contentType}
           </span>
           <h1 className={styles.articleTitle}>{content.title}</h1>
           <div className={styles.meta}>
@@ -168,18 +156,17 @@ export default async function ContentPage({
 
         {/* Affiliate disclosure */}
         <div className={styles.disclosure}>
-          يحتوي هذا المقال على روابط تسويقية. عند الشراء من خلالها قد نحصل على
-          عمولة دون تكلفة إضافية عليك.{' '}
+          {siteConfig.article.disclosure}{' '}
           <Link href="/disclosure" className={styles.disclosureLink}>
-            اقرأ المزيد
+            {siteConfig.article.disclosureLink}
           </Link>
         </div>
 
-        {/* Body */}
+        {/* Body (supports Markdown) */}
         {content.body && (
           <div
             className={styles.body}
-            dangerouslySetInnerHTML={{ __html: content.body }}
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(content.body) }}
           />
         )}
 
@@ -187,7 +174,7 @@ export default async function ContentPage({
         {linkedProducts.length > 0 && (
           <section className={styles.productsSection}>
             <h2 className={styles.productsTitle}>
-              الأدوات المذكورة في هذا المقال
+              {siteConfig.article.productsTitle}
             </h2>
             <div className={styles.productsGrid}>
               {linkedProducts.map(
@@ -233,12 +220,12 @@ export default async function ContentPage({
                       </div>
                       {affiliateUrl && (
                         <a
-                          href={affiliateUrl}
+                          href={`/api/click?url=${encodeURIComponent(affiliateUrl)}&product=${encodeURIComponent(product.slug as string || '')}&content=${encodeURIComponent(slug)}`}
                           target="_blank"
                           rel="noopener noreferrer nofollow"
                           className={styles.productCta}
                         >
-                          جرّب الأداة
+                          {siteConfig.article.tryCta}
                         </a>
                       )}
                     </div>
@@ -253,7 +240,7 @@ export default async function ContentPage({
       {/* Related Articles */}
       {relatedArticles && relatedArticles.length > 0 && (
         <section className={styles.relatedSection}>
-          <h2 className={styles.relatedTitle}>مقالات ذات صلة</h2>
+          <h2 className={styles.relatedTitle}>{siteConfig.article.relatedTitle}</h2>
           <div className={styles.relatedGrid}>
             {relatedArticles.map(
               (ra: {
@@ -269,7 +256,7 @@ export default async function ContentPage({
                   className={styles.relatedCard}
                 >
                   <span className={styles.relatedBadge}>
-                    {TYPE_AR[ra.content_type] || ra.content_type}
+                    {siteConfig.typeLabels[ra.content_type] || ra.content_type}
                   </span>
                   <h3 className={styles.relatedCardTitle}>{ra.title}</h3>
                   {ra.excerpt && (

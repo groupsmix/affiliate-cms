@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { siteConfig } from '@/lib/site-config';
 import styles from './PublicFooter.module.css';
 
 export default function PublicFooter() {
@@ -8,61 +9,48 @@ export default function PublicFooter() {
         <div className={styles.footerGrid}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brandName}>
-              أدوات البريد
+              {siteConfig.name}
             </Link>
             <p className={styles.brandDesc}>
-              موقع عربي متخصص في مراجعة ومقارنة أدوات النشرات البريدية والتسويق
-              بالإيميل. نساعدك تختار الأداة المناسبة بمراجعات صادقة ومقارنات
-              عملية.
+              {siteConfig.footer.description}
             </p>
           </div>
 
           <div className={styles.linkCol}>
-            <h4 className={styles.colTitle}>المحتوى</h4>
+            <h4 className={styles.colTitle}>{siteConfig.footer.contentColumnTitle}</h4>
             <ul className={styles.linkList}>
-              <li>
-                <Link href="/reviews" className={styles.footerLink}>
-                  المراجعات
-                </Link>
-              </li>
-              <li>
-                <Link href="/comparisons" className={styles.footerLink}>
-                  المقارنات
-                </Link>
-              </li>
-              <li>
-                <Link href="/guides" className={styles.footerLink}>
-                  الأدلة
-                </Link>
-              </li>
+              {siteConfig.footer.contentLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={styles.footerLink}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className={styles.linkCol}>
-            <h4 className={styles.colTitle}>الموقع</h4>
+            <h4 className={styles.colTitle}>{siteConfig.footer.siteColumnTitle}</h4>
             <ul className={styles.linkList}>
-              <li>
-                <Link href="/about" className={styles.footerLink}>
-                  عن الموقع
-                </Link>
-              </li>
-              <li>
-                <Link href="/disclosure" className={styles.footerLink}>
-                  سياسة الإفصاح
-                </Link>
-              </li>
+              {siteConfig.footer.siteLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={styles.footerLink}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
         <div className={styles.bottomBar}>
           <p className={styles.copyright}>
-            &copy; {new Date().getFullYear()} أدوات البريد. جميع الحقوق محفوظة.
+            &copy; {new Date().getFullYear()} {siteConfig.footer.copyright}
           </p>
           <p className={styles.disclosure}>
-            يحتوي هذا الموقع على روابط تسويقية.{' '}
+            {siteConfig.footer.affiliateNotice}{' '}
             <Link href="/disclosure" className={styles.disclosureLink}>
-              اقرأ المزيد
+              {siteConfig.footer.readMore}
             </Link>
           </p>
         </div>
