@@ -1,7 +1,43 @@
 /* ============================================================
-   Global reset & base styles for Arabic-first editorial site
+   Design tokens & base styles — Arabic-first editorial site
    ============================================================ */
 
+:root {
+  --color-primary: #0e7490;
+  --color-primary-hover: #0891b2;
+  --color-primary-dark: #155e75;
+  --color-primary-light: #ecfeff;
+
+  --color-cta: #ea580c;
+  --color-cta-hover: #c2410c;
+
+  --color-success: #059669;
+
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+
+  --color-bg: #ffffff;
+  --color-bg-alt: #f8fafc;
+  --color-bg-deep: #f1f5f9;
+
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+
+  --max-width: 1120px;
+  --max-width-narrow: 720px;
+
+  --radius: 8px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07),
+    0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
+    0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+/* Reset */
 *,
 *::before,
 *::after {
@@ -16,9 +52,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
-  color: #1a1a1a;
-  background: #fff;
+  color: var(--color-text);
+  background: var(--color-bg);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,7 +70,12 @@ img {
   display: block;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   line-height: 1.3;
   margin: 0;
 }
@@ -44,7 +84,12 @@ p {
   margin: 0;
 }
 
-ul, ol {
+ul,
+ol {
   margin: 0;
   padding: 0;
+}
+
+button {
+  font-family: inherit;
 }

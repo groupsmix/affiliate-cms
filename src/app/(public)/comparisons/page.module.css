@@ -1,0 +1,38 @@
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.groupTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 40px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.groupTitle:first-of-type {
+  margin-top: 0;
+}
+

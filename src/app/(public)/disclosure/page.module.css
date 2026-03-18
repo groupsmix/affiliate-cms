@@ -1,0 +1,53 @@
+.container {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 24px;
+}
+
+.highlight {
+  padding: 20px 24px;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin-bottom: 40px;
+}
+
+.body {
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--color-text);
+}
+
+.section {
+  margin-bottom: 36px;
+}
+
+.body h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.body p {
+  margin-bottom: 16px;
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.link:hover {
+  color: var(--color-primary-dark);
+}
